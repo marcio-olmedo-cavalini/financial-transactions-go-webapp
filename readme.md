@@ -8,6 +8,7 @@ go get golang.org/x/crypto/bcrypt
 =========================================================
 
 Como executar:
-go run main.go
+1- Subir os containers do postgres: docker compose up
+2- Executar o projeto: go run main.go
 
 Assim que o projeto subir, executar no navegador: localhost:8080/index
