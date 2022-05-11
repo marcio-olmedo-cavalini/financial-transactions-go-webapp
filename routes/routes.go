@@ -20,10 +20,12 @@ func handleHtml() {
 	r.GET("/index", controllers.ShowIndexPage)
 	r.GET("/user", controllers.ShowUserListPage)
 	r.GET("/newuser", controllers.ShowNewUserPage)
+	r.GET("/edituser", controllers.ShowEditUserPage)
 	r.NoRoute(controllers.RouteNotFound)
 }
 
 func handleServices() {
 	r.POST("/upload", controllers.UploadFile)
 	r.POST("/insertuser", controllers.SaveNewUser)
+	r.POST("/updateuser", controllers.UpdateUser)
 }

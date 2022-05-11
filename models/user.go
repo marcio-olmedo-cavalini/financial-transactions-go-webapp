@@ -46,6 +46,20 @@ func ListUsers() []User {
 	return usuarios
 }
 
+func FindUserById(id string) User {
+	var usuario User
+	fmt.Println(id)
+	database.DB.First(&usuario, id)
+	fmt.Println(usuario)
+	return usuario
+}
+
+func UpdateUser(user User, id string) {
+	var vUser User
+	database.DB.First(&vUser, id)
+	database.DB.Model(&vUser).UpdateColumns(user)
+}
+
 /*
 func main() {
     password := "secret"
