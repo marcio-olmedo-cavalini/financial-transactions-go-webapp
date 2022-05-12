@@ -37,7 +37,7 @@ func sendEmailToUser(nameValue string, passwdValue string) {
 func ShowEditUserPage(c *gin.Context) {
 	var user models.User
 	id := c.Query("id")
-	fmt.Println("id: " + id)
+	//fmt.Println("id: " + id)
 	user = models.FindUserById(id)
 	c.HTML(http.StatusOK, "edituser.html", gin.H{
 		"nome":  user.Nome,
@@ -52,5 +52,12 @@ func UpdateUser(c *gin.Context) {
 	idValue := c.PostForm("id")
 	user := models.User{Nome: nameValue, Email: emailValue}
 	models.UpdateUser(user, idValue)
+	c.Redirect(http.StatusFound, "/user")
+}
+
+func DeleteUser(c *gin.Context) {
+	id := c.Query("id")
+	fmt.Println("id: " + id)
+	models.DeleteUser(id)
 	c.Redirect(http.StatusFound, "/user")
 }

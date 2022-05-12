@@ -60,6 +60,11 @@ func UpdateUser(user User, id string) {
 	database.DB.Model(&vUser).UpdateColumns(user)
 }
 
+func DeleteUser(id string) {
+	var user User
+	database.DB.Delete(&user, id)
+}
+
 /*
 func main() {
     password := "secret"

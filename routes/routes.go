@@ -28,4 +28,5 @@ func handleServices() {
 	r.POST("/upload", controllers.UploadFile)
 	r.POST("/insertuser", controllers.SaveNewUser)
 	r.POST("/updateuser", controllers.UpdateUser)
+	r.GET("/deleteuser", controllers.DeleteUser)
 }

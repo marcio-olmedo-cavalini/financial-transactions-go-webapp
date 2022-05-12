@@ -1,14 +1,34 @@
-Pacotes para instalar
+# financial-transactions-go-webapp
 
+> Go Project created by AluraChallenge Backend 3
+
+## Development setup
+
+```sh
 go get -u github.com/gin-gonic/gin
-go get -u gorm.io/gorm
-go get -u gorm.io/driver/postgres
-go get gopkg.in/validator.v2
-go get golang.org/x/crypto/bcrypt
-=========================================================
+```
 
-Como executar:
-1- Subir os containers do postgres: docker compose up
-2- Executar o projeto: go run main.go
+```sh
+go get -u gorm.io/gorm
+```
+
+```sh
+go get -u gorm.io/driver/postgres
+```
+
+```sh
+go get gopkg.in/validator.v2
+```
+
+```sh
+go get golang.org/x/crypto/bcrypt
+```
+
+## Execute Project
+
+```sh
+docker compose up
+go run main.go
+```
 
 Assim que o projeto subir, executar no navegador: localhost:8080/index
