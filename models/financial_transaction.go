@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"github.com/marcio-olmedo-cavalini/financial-transactions-go-webapp/database"
+	database "github.com/marcio-olmedo-cavalini/financial-transactions-go-webapp/database"
 	"gopkg.in/validator.v2"
 	"gorm.io/gorm"
 )

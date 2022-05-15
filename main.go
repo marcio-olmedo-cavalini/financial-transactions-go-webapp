@@ -13,7 +13,6 @@ func main() {
 	database.OpenConnection()
 	Migrate()
 	routes.HandleRequests()
-
 }
 
 func Migrate() {

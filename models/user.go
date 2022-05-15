@@ -5,7 +5,7 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/marcio-olmedo-cavalini/financial-transactions-go-webapp/database"
+	database "github.com/marcio-olmedo-cavalini/financial-transactions-go-webapp/database"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -65,15 +65,22 @@ func DeleteUser(id string) {
 	database.DB.Delete(&user, id)
 }
 
+func FindUserByEmail(email string) User {
+	var usuario User
+	database.DB.First(&usuario, "email = ?", email)
+	fmt.Println(usuario)
+	return usuario
+}
+
 /*
 func main() {
-    password := "secret"
-    hash, _ := HashPassword(password) // ignore error for the sake of simplicity
+	password := "secret"
+	hash, _ := HashPassword(password) // ignore error for the sake of simplicity
 
-    fmt.Println("Password:", password)
-    fmt.Println("Hash:    ", hash)
+	fmt.Println("Password:", password)
+	fmt.Println("Hash:    ", hash)
 
-    match := CheckPasswordHash(password, hash)
-    fmt.Println("Match:   ", match)
+	match := CheckPasswordHash(password, hash)
+	fmt.Println("Match:   ", match)
 }
 */

@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/marcio-olmedo-cavalini/financial-transactions-go-webapp/models"
+	models "github.com/marcio-olmedo-cavalini/financial-transactions-go-webapp/models"
 )
 
 func UploadFile(c *gin.Context) {

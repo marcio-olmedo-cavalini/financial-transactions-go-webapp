@@ -4,11 +4,16 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"github.com/marcio-olmedo-cavalini/financial-transactions-go-webapp/models"
+	globals "github.com/marcio-olmedo-cavalini/financial-transactions-go-webapp/globals"
+	models "github.com/marcio-olmedo-cavalini/financial-transactions-go-webapp/models"
 )
 
 func ShowUserListPage(c *gin.Context) {
+	session := sessions.Default(c)
+	user := session.Get(globals.Userkey)
+	fmt.Println(user)
 	var usuarios = models.ListUsers()
 	c.HTML(http.StatusOK, "user.html", gin.H{
 		"usuarios": usuarios,
@@ -37,7 +42,6 @@ func sendEmailToUser(nameValue string, passwdValue string) {
 func ShowEditUserPage(c *gin.Context) {
 	var user models.User
 	id := c.Query("id")
-	//fmt.Println("id: " + id)
 	user = models.FindUserById(id)
 	c.HTML(http.StatusOK, "edituser.html", gin.H{
 		"nome":  user.Nome,

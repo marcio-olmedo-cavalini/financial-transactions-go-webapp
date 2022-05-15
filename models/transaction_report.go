@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"github.com/marcio-olmedo-cavalini/financial-transactions-go-webapp/database"
+	database "github.com/marcio-olmedo-cavalini/financial-transactions-go-webapp/database"
 	"gorm.io/gorm"
 )
 
