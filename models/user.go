@@ -48,9 +48,7 @@ func ListUsers() []User {
 
 func FindUserById(id string) User {
 	var usuario User
-	fmt.Println(id)
 	database.DB.First(&usuario, id)
-	fmt.Println(usuario)
 	return usuario
 }
 
@@ -68,7 +66,7 @@ func DeleteUser(id string) {
 func FindUserByEmail(email string) User {
 	var usuario User
 	database.DB.First(&usuario, "email = ?", email)
-	fmt.Println(usuario)
+	fmt.Println(usuario.Nome)
 	return usuario
 }
 

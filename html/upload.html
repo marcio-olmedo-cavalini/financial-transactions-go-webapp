@@ -33,6 +33,8 @@
                         <tr>
                             <th>Data Transações</th>
                             <th>Data Importação</th>
+                            <th>Usuário Responsável</th>
+                            <th>Opções</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -40,6 +42,8 @@
                         <tr>
                             <td>{{.DataTransacao}}</td>
                             <td>{{.DataImportacao}}</td>
+                            <td>{{.NomeUsuario}}</td>
+                            <td><a href="/importdetail?id={{.ID}}" class="btn btn-info">Detalhar</a></td>
                         </tr>
                         {{end}}
                     </tbody>

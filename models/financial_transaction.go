@@ -1,9 +1,11 @@
 package models
 
 import (
+	"fmt"
 	"time"
 
 	database "github.com/marcio-olmedo-cavalini/financial-transactions-go-webapp/database"
+	"github.com/marcio-olmedo-cavalini/financial-transactions-go-webapp/globals"
 	"gopkg.in/validator.v2"
 	"gorm.io/gorm"
 )
@@ -18,6 +20,25 @@ type FinancialTransaction struct {
 	ContaDestino      string    `json:"contaDestino" validate:"nonzero"`
 	ValorTransacao    float64   `json:"valorTransacao" validate:"nonzero"`
 	DataHoraTransacao time.Time `json:"dataHoraTransacao" validate:"nonzero"`
+}
+
+type FinancialTransactionRawQuery struct {
+	DataHoraTransacao string
+	BancoOrigem       string
+	AgenciaOrigem     string
+	ContaOrigem       string
+	BancoDestino      string
+	AgenciaDestino    string
+	ContaDestino      string
+	ValorTransacao    string
+}
+
+type AccountTransactionRawQuery struct {
+	Banco             string
+	Agencia           string
+	Conta             string
+	TipoTransacao     string
+	ValorMovimentacao float64
 }
 
 func ValidateFinancialTransaction(financialTransaction *FinancialTransaction) error {
@@ -36,4 +57,23 @@ func ExistsFinancialTransactionByDate(dataFiltro time.Time) bool {
 	var ft FinancialTransaction
 	result := database.DB.Where("data_hora_transacao >= ?", dataFiltro.Format("2006-01-02")).First(&ft)
 	return result.RowsAffected != 0
+}
+
+func GetAllFinancialTransactionRawQuery(id string) []FinancialTransactionRawQuery {
+	var result []FinancialTransactionRawQuery
+	database.DB.Raw("select to_char(ft.data_hora_transacao, 'DD/MM/YYYY') as data_hora_transacao, ft.banco_origem, ft.agencia_origem, ft.conta_origem, ft.banco_destino, ft.agencia_destino, ft.conta_destino, ft.valor_transacao::text as valor_transacao from financial_transactions ft WHERE to_char(ft.data_hora_transacao, 'DD/MM/YYYY') = (select to_char(data_transacao, 'DD/MM/YYYY') from transaction_reports where id = ?)", id).Scan(&result)
+	return result
+}
+
+func GetSuspectedFinancialTransactionRawQuery(month string) []FinancialTransactionRawQuery {
+	var result []FinancialTransactionRawQuery
+	database.DB.Raw("select to_char(ft.data_hora_transacao, 'DD/MM/YYYY') as data_hora_transacao, ft.banco_origem, ft.agencia_origem, ft.conta_origem, ft.banco_destino, ft.agencia_destino, ft.conta_destino, ft.valor_transacao::text as valor_transacao from financial_transactions ft WHERE ft.valor_transacao >= ? and to_char(ft.data_hora_transacao, 'YYYYMM') = ?", globals.SuspectedTransactionValue, month).Scan(&result)
+	return result
+}
+
+func GetSuspectedAccountTransactionRawQuery(month string) []AccountTransactionRawQuery {
+	var result []AccountTransactionRawQuery
+	database.DB.Raw("select ft.banco_origem as banco, ft.agencia_origem as agencia, ft.conta_origem as conta, 'SAIDA' as tipo_transacao, sum(ft.valor_transacao) as valor_transacao from financial_transactions ft WHERE ft.valor_transacao >= ? and to_char(ft.data_hora_transacao, 'YYYYMM') = ? group by ft.banco_origem, ft.agencia_origem, ft.conta_origem union select ft.banco_destino as banco, ft.agencia_destino as agencia, ft.conta_destino as conta, 'ENTRADA' as tipo_transacao, sum(ft.valor_transacao) as valor_transacao from financial_transactions ft WHERE ft.valor_transacao >= ? and to_char(ft.data_hora_transacao, 'YYYYMM') = ? group by ft.banco_destino, ft.agencia_destino, ft.conta_destino", globals.SuspectedTransactionValue, month, globals.SuspectedTransactionValue, month).Scan(&result)
+	fmt.Println(result)
+	return result
 }
