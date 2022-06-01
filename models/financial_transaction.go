@@ -1,6 +1,7 @@
 package models
 
 import (
+	"encoding/xml"
 	"fmt"
 	"time"
 
@@ -41,6 +42,40 @@ type AccountTransactionRawQuery struct {
 	ValorMovimentacao float64
 }
 
+type AgencyTransactionRawQuery struct {
+	Banco             string
+	Agencia           string
+	TipoTransacao     string
+	ValorMovimentacao float64
+}
+
+type Transacoes struct {
+	XMLName    xml.Name    `xml:"transacoes"`
+	Transacoes []Transacao `xml:"transacao"`
+}
+
+type Transacao struct {
+	XMLName       xml.Name `xml:"transacao"`
+	Origem        Origem   `xml:"origem"`
+	Destino       Destino  `xml:"destino"`
+	Valor         string   `xml:"valor"`
+	DataTransacao string   `xml:"data"`
+}
+
+type Origem struct {
+	XMLName xml.Name `xml:"origem"`
+	Banco   string   `xml:"banco"`
+	Agencia string   `xml:"agencia"`
+	Conta   string   `xml:"conta"`
+}
+
+type Destino struct {
+	XMLName xml.Name `xml:"destino"`
+	Banco   string   `xml:"banco"`
+	Agencia string   `xml:"agencia"`
+	Conta   string   `xml:"conta"`
+}
+
 func ValidateFinancialTransaction(financialTransaction *FinancialTransaction) error {
 	if err := validator.Validate(financialTransaction); err != nil {
 		return err
@@ -73,7 +108,14 @@ func GetSuspectedFinancialTransactionRawQuery(month string) []FinancialTransacti
 
 func GetSuspectedAccountTransactionRawQuery(month string) []AccountTransactionRawQuery {
 	var result []AccountTransactionRawQuery
-	database.DB.Raw("select ft.banco_origem as banco, ft.agencia_origem as agencia, ft.conta_origem as conta, 'SAIDA' as tipo_transacao, sum(ft.valor_transacao) as valor_transacao from financial_transactions ft WHERE ft.valor_transacao >= ? and to_char(ft.data_hora_transacao, 'YYYYMM') = ? group by ft.banco_origem, ft.agencia_origem, ft.conta_origem union select ft.banco_destino as banco, ft.agencia_destino as agencia, ft.conta_destino as conta, 'ENTRADA' as tipo_transacao, sum(ft.valor_transacao) as valor_transacao from financial_transactions ft WHERE ft.valor_transacao >= ? and to_char(ft.data_hora_transacao, 'YYYYMM') = ? group by ft.banco_destino, ft.agencia_destino, ft.conta_destino", globals.SuspectedTransactionValue, month, globals.SuspectedTransactionValue, month).Scan(&result)
+	database.DB.Raw("select ft.banco_origem as banco, ft.agencia_origem as agencia, ft.conta_origem as conta, 'SAIDA' as tipo_transacao, sum(ft.valor_transacao) as valor_transacao from financial_transactions ft WHERE ft.valor_transacao >= ? and to_char(ft.data_hora_transacao, 'YYYYMM') = ? group by ft.banco_origem, ft.agencia_origem, ft.conta_origem union select ft.banco_destino as banco, ft.agencia_destino as agencia, ft.conta_destino as conta, 'ENTRADA' as tipo_transacao, sum(ft.valor_transacao) as valor_transacao from financial_transactions ft WHERE ft.valor_transacao >= ? and to_char(ft.data_hora_transacao, 'YYYYMM') = ? group by ft.banco_destino, ft.agencia_destino, ft.conta_destino", globals.SuspectedBankAccountValue, month, globals.SuspectedBankAccountValue, month).Scan(&result)
+	fmt.Println(result)
+	return result
+}
+
+func GetSuspectedAgencyTransactionRawQuery(month string) []AgencyTransactionRawQuery {
+	var result []AgencyTransactionRawQuery
+	database.DB.Raw("select ft.banco_origem as banco, ft.agencia_origem as agencia, 'SAIDA' as tipo_transacao, sum(ft.valor_transacao) as valor_transacao from financial_transactions ft WHERE ft.valor_transacao >= ? and to_char(ft.data_hora_transacao, 'YYYYMM') = ? group by ft.banco_origem, ft.agencia_origem union select ft.banco_destino as banco, ft.agencia_destino as agencia, 'ENTRADA' as tipo_transacao, sum(ft.valor_transacao) as valor_transacao from financial_transactions ft WHERE ft.valor_transacao >= ? and to_char(ft.data_hora_transacao, 'YYYYMM') = ? group by ft.banco_destino, ft.agencia_destino", globals.SuspectedBankAgencyValue, month, globals.SuspectedBankAgencyValue, month).Scan(&result)
 	fmt.Println(result)
 	return result
 }

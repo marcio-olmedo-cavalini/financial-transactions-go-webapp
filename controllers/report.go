@@ -17,9 +17,11 @@ func GenerateReport(c *gin.Context) {
 	fmt.Println("month" + month)
 	transactionReport := models.GetSuspectedFinancialTransactionRawQuery(month)
 	accountReport := models.GetSuspectedAccountTransactionRawQuery(month)
+	agencyReport := models.GetSuspectedAgencyTransactionRawQuery(month)
 	c.HTML(http.StatusOK, "report.html", gin.H{
 		"content":           0,
 		"transacaoSuspeita": transactionReport,
 		"contaSuspeita":     accountReport,
+		"agenciaSuspeita":   agencyReport,
 	})
 }

@@ -106,7 +106,36 @@
                 </table>
             </div>
         </section>
-    {{end}}
+         {{end}}
+    </div>
+    <div class="container">
+        {{if .agenciaSuspeita}}
+        <section class="card">
+            <div class="mb-3">
+                <h1>Contas Suspeitas</h1>
+                <table class="table table-striped table-hover mb-0" border="1">
+                    <thead>
+                        <tr>
+                            <td><strong>BANCO</strong></td>
+                            <td><strong>AG&Ecirc;NCIA</strong></td>
+                            <td><strong>VALOR MOVIMENTADO</strong></td>
+                            <td><strong>TIPO TRANSAÇÃO</strong></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{range .agenciaSuspeita}}
+                        <tr>
+                            <td>{{.Banco}}</td>
+                            <td>{{.Agencia}}</td>
+                            <td>{{.ValorMovimentacao}}</td>
+                            <td>{{.TipoTransacao}}</td>
+                        </tr>
+                        {{end}}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+         {{end}}
     </div>
 </body>
 
